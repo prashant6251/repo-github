@@ -1,4 +1,0 @@
-Hello world 
-<html>
-<h1>This is hello world program</h1>
-</html>
