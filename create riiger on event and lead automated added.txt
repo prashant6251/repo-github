@@ -1,0 +1,31 @@
+
+trigger count on Event (after insert,after delete,after undelete ) 
+{
+set<id>leadid=new set<id>();
+list <lead>leadstoupdate=new list<lead>();
+if(trigger.isinsert ||trigger.isundelete)
+{
+for(Event e:trigger.new)
+{
+if (string.valueof(e.whoid).startswith('00Q'))
+leadid.add(e.whoid);
+}
+}
+
+if(trigger.IsDelete)
+{
+for(Event e:trigger.old)
+{
+if(string.valueof(e.whoid).startswith('00Q'))
+leadid.add(e.whoid);
+}
+}
+if(leadid.size()>0)
+{
+for(lead l : [select l.id, l.no_of_event__c,(select id from Events) From Lead where id In:leadid])
+{
+leadstoupdate.add(new lead(id=l.id,no_of_event__c=l.events.size()));
+}
+update leadstoupdate;
+ }
+                         }
